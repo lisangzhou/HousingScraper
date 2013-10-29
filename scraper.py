@@ -255,7 +255,11 @@ if __name__ == '__main__':
             search_start_date = datetime.date(search_start_date.year,month,day)
 
         scrape_settings, search_url = parse_settings(args.settings)
-        search_results = get_search_results(search_url, search_start_date)
+        search_url_subbed = search_url.format(scrape_settings['min_price'],
+                                    scrape_settings['max_price'],
+                                    scrape_settings['bedrooms'],
+                                    scrape_settings['type'])
+        search_results = get_search_results(search_url_subbed, search_start_date)
 
 
 
