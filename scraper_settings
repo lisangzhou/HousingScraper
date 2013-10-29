@@ -1,0 +1,28 @@
+[scraper_settings]
+
+# minimum price, in dollars
+min_price = 100
+
+# maximum price, in dollars
+max_price = 10000
+
+# minimum number of bedrooms
+bedrooms = 2
+
+# type of housing
+# view source code for valid types
+type = "any housing"
+
+# maximum distance in miles
+max_distance = 3.0
+
+# maximum walking time, in format hh:mm:ss
+max_time = "00:30:00"
+
+# reference location
+center_address = "Soda Hall, Berkeley CA 94720"
+
+# url for search page
+searchURL = "http://sfbay.craigslist.org/search/hhh/eby?catAbb=apa&query=berkeley&zoomToPosting=&minAsk={0}&maxAsk={1}&bedrooms={2}&housing_type={3}&"
+
+
