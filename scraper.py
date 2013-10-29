@@ -241,14 +241,14 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Scrape the East Bay Craigslist for housing in Berkeley")
 
     parser.add_argument('settings',help='settings file with parameters to scrape for')
-    parser.add_argument('-d','--date',type=str,help='start date for listings to search for. Has format mm-dd',default=None)
+    parser.add_argument('-d','--date',type=str,help="start date for listings to search for. Has format mm-dd. If this argument is not included, it will just get today's listings.",default='auto')
 
 
     args = parser.parse_args()
 
     try:
         search_start_date = datetime.date.today()
-        if args.date != None:
+        if args.date != 'auto':
             date_broken = args.date.split('-')
             month = int(date_broken[0])
             day = int(date_broken[1])
