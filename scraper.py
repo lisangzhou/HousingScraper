@@ -64,7 +64,8 @@ class SearchResult(object):
         self.longitude = None
         self.latitude = None
         self.address = None
-        self.distances = {}
+        self.distance = None
+        self.time = None
 
         link_tag = tag.find_next(filter_for_link)
         self.url = '{0}{1}'.format(prefix,link_tag["href"].encode('ascii','ignore'))
@@ -148,8 +149,8 @@ class SearchResult(object):
     '''
     def distance_to(self, address):
 
-        if 'distance' in self.distances and 'time' in self.distances:
-            return [self.distances['distance'],self.distances['time']]
+        if self.distance and self.time:
+            return self.distance, self.time
         elif self.determine_address():
             condensed_start_address = condense_address_query(address)
             condensed_dest_address = condense_address_query(self.address)
@@ -168,8 +169,8 @@ class SearchResult(object):
                 total_time = datetime.timedelta(seconds=total_seconds)
                 distance_in_miles = total_meters / (1609.34)
 
-                self.distances['distance'] = distance_in_miles
-                self.distances['time'] = total_time
+                self.distance = distance_in_miles
+                self.time = total_time
 
                 return distance_in_miles, total_time
             else:
@@ -182,10 +183,10 @@ class SearchResult(object):
         Does what it's supposed to do.
     '''
     def __str__(self):
-        if 'distance' in self.distances and 'time' in self.distances:
+        if self.distance and self.time:
             return '{0}: ${1:.2f}, {2} BR, {3} BA, {4}sqft\n{5} mi, {6} hh:mm:ss walking,\n{7}'.format(
                 self.title.encode('ascii','ignore'),self.price,self.bedrooms,self.bathrooms,self.area,
-                self.distances['distance'],self.distances['time'],self.url)
+                self.distance,self.time,self.url)
         else:
             return '{0}: ${1:.2f}, {2}BR, {3}BA, {4}sqft\n{5}'.format(
                 self.title.encode('ascii','ignore'),self.price,self.bedrooms,self.bathrooms,self.area,
@@ -262,7 +263,7 @@ if __name__ == '__main__':
         search_results = get_search_results(search_url_subbed, search_start_date)
 
         has_distance_filter = lambda x: x.distance_to(scrape_settings['center_address'])
-        distance_filter = lambda x: x.distances['distance'] <= scrape_settings['max_distance'] and x.distances['time'] <= scrape_settings['max_time']
+        distance_filter = lambda x: x.distance <= scrape_settings['max_distance'] and x.time <= scrape_settings['max_time']
 
         filtered_search_results = filter(has_distance_filter, search_results)
         filtered_search_results = filter(distance_filter, filtered_search_results)
