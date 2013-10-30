@@ -50,7 +50,8 @@ def parse_settings(settings_file):
     settings = default_scraper_settings()
 
     INT_PARAMS = set(['min_price',
-                        'max_price'])
+                        'max_price',
+			'bedrooms'])
 
     FLOAT_PARAMS = set(['max_distance'])
 

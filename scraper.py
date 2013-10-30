@@ -200,7 +200,7 @@ def download_page(url):
 
 def get_search_results(url, start_date):
     html = download_page(url)
-    results_url_prefix = url.split('search')[0]
+    results_url_prefix = url.split('/search')[0]
 
     def tag_row(tag):
         return tag.name == 'p' and tag.has_attr("class") and unicode('row') in tag['class']
@@ -260,8 +260,6 @@ if __name__ == '__main__':
                                     scrape_settings['bedrooms'],
                                     scrape_settings['type'])
         search_results = get_search_results(search_url_subbed, search_start_date)
-
-
 
         has_distance_filter = lambda x: x.distance_to(scrape_settings['center_address'])
         distance_filter = lambda x: x.distances['distance'] <= scrape_settings['max_distance'] and x.distances['time'] <= scrape_settings['max_time']
