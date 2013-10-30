@@ -192,6 +192,18 @@ class SearchResult(object):
                 self.title.encode('ascii','ignore'),self.price,self.bedrooms,self.bathrooms,self.area,
                 self.url)
 
+    def __eq__(self, other):
+        if isinstance(other, SearchResult):
+            return self.price == other.price and self.bedrooms == other.bedrooms and self.bathrooms == other.bathrooms and self.latitude == other.latitude and self.longitude == other.longitude
+        else:
+            return False
+
+    def __ne__(self, other):
+        return (not self.__eq__(other))
+
+    def __hash__(self):
+        return hash(self.__str__())
+
 
 def download_page(url):
     response = urllib2.urlopen(url, timeout=5)
@@ -237,6 +249,17 @@ def get_search_results(url, start_date):
     return search_results
 
 
+def remove_duplicates(search_results):
+    no_duplicates = []
+    for i in range(len(search_results)):
+        has_duplicate = False
+        for j in range(i+1, len(search_results)):
+            if search_results[i] == search_results[j]:
+                has_duplicate = True
+                break
+        if not has_duplicate:
+            no_duplicates.append(search_results[i])
+    return no_duplicates
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Scrape the East Bay Craigslist for housing in Berkeley")
@@ -265,8 +288,11 @@ if __name__ == '__main__':
         has_distance_filter = lambda x: x.distance_to(scrape_settings['center_address'])
         distance_filter = lambda x: x.distance <= scrape_settings['max_distance'] and x.time <= scrape_settings['max_time']
 
-        filtered_search_results = filter(has_distance_filter, search_results)
+        filtered_search_results = remove_duplicates(search_results)
+        filtered_search_results = filter(has_distance_filter, filtered_search_results)
         filtered_search_results = filter(distance_filter, filtered_search_results)
+
+
 
         for item in filtered_search_results:
             print item
