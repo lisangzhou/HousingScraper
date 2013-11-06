@@ -117,8 +117,11 @@ class SearchResult(object):
 
             m = re.match(r"(?P<bedroom>\w+) / (?P<bathroom>\w+)", attribute_contents)
             if m:
-                self.bedrooms = int(re.sub(r'BR', '', m.group('bedroom')))
-                self.bathrooms = int(re.sub(r'Ba','',m.group('bathroom')))
+                try:
+                    self.bedrooms = int(re.sub(r'BR', '', m.group('bedroom')))
+                    self.bathrooms = int(re.sub(r'Ba','',m.group('bathroom')))
+                except ValueError:
+                    pass
 
             n = re.match(r"(?P<area>[0-9]+)ft", attribute_contents)
             if n:
@@ -184,11 +187,11 @@ class SearchResult(object):
     '''
     def __str__(self):
         if self.distance and self.time:
-            return '{0}: ${1:.2f}, {2} BR, {3} BA, {4}sqft\n{5} mi, {6} hh:mm:ss walking,\n{7}'.format(
+            return '{0}: ${1:.2f}, {2} BR, {3} BA, {4} sqft\n{5} mi, {6} hh:mm:ss walking,\n{7}'.format(
                 self.title.encode('ascii','ignore'),self.price,self.bedrooms,self.bathrooms,self.area,
                 self.distance,self.time,self.url)
         else:
-            return '{0}: ${1:.2f}, {2}BR, {3}BA, {4}sqft\n{5}'.format(
+            return '{0}: ${1:.2f}, {2}BR, {3}BA, {4} sqft\n{5}'.format(
                 self.title.encode('ascii','ignore'),self.price,self.bedrooms,self.bathrooms,self.area,
                 self.url)
 
